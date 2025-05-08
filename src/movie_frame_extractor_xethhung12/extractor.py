@@ -1,8 +1,7 @@
-import datetime
 from typing import Generator
 
 import cv2
-import os
+
 
 class Extractor:
     def __init__(self, video_path):
