@@ -13,6 +13,12 @@ class Extractor:
         seconds = round(frames / fps)
         self.duration = seconds
 
+    def get_codec(self)->str:
+        cap = cv2.VideoCapture(self.video_path)
+        h = int(cap.get(cv2.CAP_PROP_FOURCC))
+        codec = chr(h & 0xff) + chr((h >> 8) & 0xff) + chr((h >> 16) & 0xff) + chr((h >> 24) & 0xff)
+        return codec
+
     def get_duration(self):
         return self.duration
 
@@ -25,27 +31,23 @@ class Extractor:
             end_at = self.duration
 
         currentframe = 0
-        while True:
+        cond = True
+        while cond:
             ret, frame = cam.read()
-            t_in_ms=cam.get(cv2.CAP_PROP_POS_MSEC)
-            t_in_s=int(t_in_ms/1000)
 
-            if t_in_s < start_at:
-                currentframe += 1
-                continue
-
-            elif start_at <= int(t_in_ms/1000) <= end_at:
-                if ret:
+            if ret:
+                t_in_ms=cam.get(cv2.CAP_PROP_POS_MSEC)
+                t_in_s=int(t_in_ms/1000)
+                if t_in_s < start_at:
+                    currentframe += 1
+                    continue
+                elif start_at <= t_in_s <= end_at:
                     yield currentframe, t_in_ms, frame
                     currentframe += 1
-                else:
+                elif t_in_s > end_at:
                     break
-            elif t_in_s > end_at:
+            else:
                 break
 
         cam.release()
         cv2.destroyAllWindows()
-
-if __name__ == '__main__':
-    for i in Extractor("/home/xeth/Downloads/REC_2025_04_30_21_47_02_F.MP4").extract_frames(10,12):
-        print(i)

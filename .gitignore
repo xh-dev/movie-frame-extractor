@@ -1,3 +1,4 @@
 sss
 .idea
 dist
+**/__pycache__
