@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "movie_frame_extractor_xethhung12"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [ "opencv-python", "pyfilesizeutils",]
 description = "A small program to extract movie frame from video"
 readme = "README.md"
